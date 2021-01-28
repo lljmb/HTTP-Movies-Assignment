@@ -8,13 +8,13 @@ import { useParams, useHistory } from "react-router-dom";
 const UpdateMovie = ({ movieList, setMovieList }) => {
     const history = useHistory();
     const { id } = useParams();
-    const [formValues, setFormValues] = useState();
+    const [movie, setMovie] = useState();
 
     useEffect(() => {
         axios
             .get(`http://localhost:5000/api/movies/${id}`)
             .then(res => {
-                setFormValues(res.data);
+                setMovie(res.data);
             })
             .catch(err => {
                 console.log('error in form effect: ', err);
@@ -22,8 +22,8 @@ const UpdateMovie = ({ movieList, setMovieList }) => {
     }, []);
 
     const changeHandler = e => {
-        setFormValues({ 
-            ...formValues, 
+        setMovie({ 
+            ...movie, 
             [e.target.name]: e.target.value
          });
     };
@@ -31,7 +31,7 @@ const UpdateMovie = ({ movieList, setMovieList }) => {
     const handleUpdateClick = e => {
         e.preventDefault();
         axios
-            .put(`http://localhost:5000/api/movies/${id}`, formValues)
+            .put(`http://localhost:5000/api/movies/${id}`, movie)
             .then(res => {
                 setMovieList([...movieList, res.data]);
                 history.push('/');
@@ -51,28 +51,28 @@ const UpdateMovie = ({ movieList, setMovieList }) => {
                     name='title'
                     onChange={changeHandler}
                     placeholder='title'
-                    value={formValues.title}
+                    value={movie.title}
                 />
                 <input
                     type='text'
                     name='director'
                     onChange={changeHandler}
                     placeholder='director'
-                    value={formValues.director}
+                    value={movie.director}
                 />  
                 <input
                     type='text'
                     name='metascore'
                     onChange={changeHandler}
                     placeholder='metascore'
-                    value={formValues.metascore}
+                    value={movie.metascore}
                 />
                 <input
                     type='text'
                     name='stars'
                     onChange={changeHandler}
                     placeholder='stars'
-                    value={formValues.stars}
+                    value={movie.stars}
                 />       
                 <button>Update Movie</button>      
             </form>
