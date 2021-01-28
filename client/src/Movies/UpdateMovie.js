@@ -1,0 +1,86 @@
+import axios from 'axios';
+import React, { useState, useEffect } from 'react'
+import { useParams, useHistory } from "react-router-dom";
+
+
+
+
+const UpdateMovie = ({ movieList, setMovieList }) => {
+    const history = useHistory();
+    const { id } = useParams();
+    const [formValues, setFormValues] = useState();
+
+    useEffect(() => {
+        axios
+            .get(`http://localhost:5000/api/movies/${id}`)
+            .then(res => {
+                setFormValues(res.data);
+            })
+            .catch(err => {
+                console.log('error in form effect: ', err);
+            });
+    }, []);
+
+    const changeHandler = e => {
+        setFormValues({ 
+            ...formValues, 
+            [e.target.name]: e.target.value
+         });
+    };
+
+    const handleUpdateClick = e => {
+        e.preventDefault();
+        axios
+            .put(`http://localhost:5000/api/movies/${id}`, formValues)
+            .then(res => {
+                setMovieList([...movieList, res.data]);
+                history.push('/');
+            })
+            .catch(err => { 
+                console.log('error in update form: ', err)
+            });
+    };
+
+
+    return ( 
+       <>
+            <h1>Update Item</h1>
+            <form onSubmit={handleUpdateClick}>
+                <input
+                    type='text'
+                    name='title'
+                    onChange={changeHandler}
+                    placeholder='title'
+                    value={formValues.title}
+                />
+                <input
+                    type='text'
+                    name='director'
+                    onChange={changeHandler}
+                    placeholder='director'
+                    value={formValues.director}
+                />  
+                <input
+                    type='text'
+                    name='metascore'
+                    onChange={changeHandler}
+                    placeholder='metascore'
+                    value={formValues.metascore}
+                />
+                <input
+                    type='text'
+                    name='stars'
+                    onChange={changeHandler}
+                    placeholder='stars'
+                    value={formValues.stars}
+                />       
+                <button>Update Movie</button>      
+            </form>
+
+        
+            
+        </>
+    )
+}
+
+export default UpdateMovie
